@@ -9,6 +9,7 @@ public class DraggableNode : MonoBehaviour
   private Vector3 startingMousePosition;
   private Vector3 originalSize;
   private Vector3 originalPosition;
+  private Vector3 startPosition;  // Added for storing the initial position before drag
 
   // These thresholds define the width of the resizable borders.
   private float edgeThreshold = 0.1f;
@@ -67,6 +68,8 @@ public class DraggableNode : MonoBehaviour
     Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     offset = transform.position - mousePosition;
 
+    // Store the start position for possible reversion later
+    startPosition = transform.position;
     // Check if an edge was clicked for resizing.
     if (Mathf.Abs(mousePosition.x - transform.position.x) > (transform.localScale.x / 2) - edgeThreshold)
     {
@@ -94,5 +97,34 @@ public class DraggableNode : MonoBehaviour
     isDragging = false;
     isResizing = false;
     currentResizeDirection = ResizeDirection.None;
+
+    // Check for overlaps after dragging
+    if (IsOverlappingOtherNodes())
+    {
+      // If overlapping, return to start position
+      transform.position = startPosition;
+    }
+  }
+
+  // Check for overlapping nodes
+  private bool IsOverlappingOtherNodes()
+  {
+    // Get the collider of our node
+    Collider2D nodeCollider = GetComponent<Collider2D>();
+
+    // Check all overlapping colliders in the area of our node
+    Collider2D[] overlappingColliders = Physics2D.OverlapAreaAll((Vector2)(transform.position - transform.localScale / 2),
+                                                                  (Vector2)(transform.position + transform.localScale / 2));
+
+    foreach (Collider2D collider in overlappingColliders)
+    {
+      // If any of the overlapping colliders is another node and is not our node
+      if (collider.CompareTag("Node") && collider != nodeCollider)
+      {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
