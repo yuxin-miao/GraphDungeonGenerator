@@ -3,6 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class DraggableNode : MonoBehaviour
 {
+
   private bool isDragging = false;
   private bool isResizing = false;
   private Vector3 offset;

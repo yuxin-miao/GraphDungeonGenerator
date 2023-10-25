@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.UI; // Required for UI elements
 
 public class NodeManager : MonoBehaviour
@@ -7,13 +8,17 @@ public class NodeManager : MonoBehaviour
   public Button addButton;
   public Button finishButton;
   public GameObject processingPopup;  // A GameObject containing the UI for the "Processing..." popup.
+  public List<GameObject> nodes = new List<GameObject>();
 
-
+  TriangulationManager triangulationManager;
   // Max attempts to reposition a new node if it overlaps with other nodes
   private const int maxPositionAttempts = 100;
 
   private GameObject selectedNode = null;
-
+  private void Awake()
+  {
+    triangulationManager = FindObjectOfType<TriangulationManager>();
+  }
   void Start()
   {
     addButton.onClick.AddListener(AddNode);
@@ -33,7 +38,7 @@ public class NodeManager : MonoBehaviour
     // Ensure the new node does not overlap with existing nodes
     if (IsPositionClear(newPosition))
     {
-      Instantiate(nodePrefab, newPosition, Quaternion.identity);
+      nodes.Add(Instantiate(nodePrefab, newPosition, Quaternion.identity));
     }
     else
     {
@@ -50,7 +55,7 @@ public class NodeManager : MonoBehaviour
 
         if (IsPositionClear(tryPosition))
         {
-          Instantiate(nodePrefab, tryPosition, Quaternion.identity);
+          nodes.Add(Instantiate(nodePrefab, tryPosition, Quaternion.identity));
           break;
         }
 
@@ -75,6 +80,7 @@ public class NodeManager : MonoBehaviour
       {
         selectedNode = hit.collider.gameObject;
         Destroy(selectedNode);  // Delete the node on right click
+        nodes.Remove(selectedNode);
       }
     }
   }
@@ -92,13 +98,14 @@ public class NodeManager : MonoBehaviour
     // After this, you'd probably also want to hide the processing popup at some point.
     // You can use a coroutine to simulate a delay, or you might hide it once actual processing is done.
     Debug.Log("User input finished!");
+    triangulationManager.PerformTriangulation();
   }
 
   // Check if a given position is clear of nodes
   private bool IsPositionClear(Vector3 position)
   {
-    Vector3 halfSize = nodePrefab.transform.localScale / 2; // Assuming the node has default scale when instantiated
-    Collider2D[] overlappingColliders = Physics2D.OverlapAreaAll(position - halfSize, position + halfSize);
+    float radius = nodePrefab.transform.localScale.x / 2; // Assuming nodes are roughly circular in shape
+    Collider2D[] overlappingColliders = Physics2D.OverlapCircleAll(position, radius);
 
     foreach (Collider2D collider in overlappingColliders)
     {
@@ -110,4 +117,7 @@ public class NodeManager : MonoBehaviour
 
     return true;
   }
+
 }
+
+

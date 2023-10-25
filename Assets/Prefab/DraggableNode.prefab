@@ -122,4 +122,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a5fc3e515a06384497843053dc256e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resizeHandlePrefab: {fileID: 1405464169813651282, guid: c20fb04f8cafd25429418b236eb88a12, type: 3}
+  nodeManager: {fileID: 6456731242560633158, guid: 0cedcb8ed0822734fbd3d1bbd2820352, type: 3}
