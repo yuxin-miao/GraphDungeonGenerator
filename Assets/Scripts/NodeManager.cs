@@ -4,11 +4,13 @@ using UnityEngine.UI; // Required for UI elements
 
 public class NodeManager : MonoBehaviour
 {
-  public GameObject nodePrefab;  // Assign your Node prefab in the inspector.
+  public GameObject nodePrefab; 
   public Button addButton;
   public Button finishButton;
+  public Button nextButton;  
   public GameObject processingPopup;  // A GameObject containing the UI for the "Processing..." popup.
   public List<GameObject> nodes = new List<GameObject>();
+  MSTManager mstManager;
 
   TriangulationManager triangulationManager;
   // Max attempts to reposition a new node if it overlaps with other nodes
@@ -18,6 +20,7 @@ public class NodeManager : MonoBehaviour
   private void Awake()
   {
     triangulationManager = FindObjectOfType<TriangulationManager>();
+    mstManager = FindObjectOfType<MSTManager>();
   }
   void Start()
   {
@@ -26,6 +29,10 @@ public class NodeManager : MonoBehaviour
 
     // Ensure the processing popup is initially hidden.
     processingPopup.SetActive(false);
+
+
+    nextButton.onClick.AddListener(OnNextButtonPressed); // Assuming you have a method to handle the Next button
+    nextButton.gameObject.SetActive(false); // Hide the Next button at the start
   }
 
   public void AddNode()
@@ -90,7 +97,14 @@ public class NodeManager : MonoBehaviour
     // Hide the Add and Finish buttons.
     addButton.gameObject.SetActive(false);
     finishButton.gameObject.SetActive(false);
-
+    foreach (GameObject node in nodes)
+    {
+      DraggableNode draggableNode = node.GetComponent<DraggableNode>();
+      if (draggableNode)
+      {
+        draggableNode.SetDraggable(false);
+      }
+    }
     // Show the "Processing..." popup.
     processingPopup.SetActive(true);
 
@@ -99,6 +113,7 @@ public class NodeManager : MonoBehaviour
     // You can use a coroutine to simulate a delay, or you might hide it once actual processing is done.
     Debug.Log("User input finished!");
     triangulationManager.PerformTriangulation();
+
   }
 
   // Check if a given position is clear of nodes
@@ -116,6 +131,19 @@ public class NodeManager : MonoBehaviour
     }
 
     return true;
+  }
+
+  // This function will be called when the triangulation process finishes.
+  public void OnTriangulationCompleted()
+  {
+    processingPopup.SetActive(false);
+    nextButton.gameObject.SetActive(true);
+  }
+
+  void OnNextButtonPressed()
+  {
+    mstManager.GenerateMST(triangulationManager.triangulatedEdges);
+    triangulationManager.DrawTriangulatedEdges(mstManager.mstEdges);
   }
 
 }

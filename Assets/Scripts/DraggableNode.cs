@@ -14,6 +14,7 @@ public class DraggableNode : MonoBehaviour
 
   // These thresholds define the width of the resizable borders.
   private float edgeThreshold = 0.1f;
+  public bool isDraggable = true; // Nodes are draggable by default
 
   private enum ResizeDirection
   {
@@ -27,40 +28,43 @@ public class DraggableNode : MonoBehaviour
 
   void Update()
   {
-    if (isDragging)
+    if (isDraggable)
     {
-      Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) + offset;
-      transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
-    }
-
-    if (isResizing)
-    {
-      Vector3 dragDelta = Camera.main.ScreenToWorldPoint(Input.mousePosition) - startingMousePosition;
-      Vector3 newSize = originalSize;
-      Vector3 newPosition = originalPosition;
-
-      switch (currentResizeDirection)
+      if (isDragging)
       {
-        case ResizeDirection.VerticalUp:
-          newSize.y += dragDelta.y;
-          newPosition.y = originalPosition.y + dragDelta.y / 2;
-          break;
-        case ResizeDirection.VerticalDown:
-          newSize.y -= dragDelta.y;
-          newPosition.y = originalPosition.y + dragDelta.y / 2;
-          break;
-        case ResizeDirection.HorizontalLeft:
-          newSize.x -= dragDelta.x;
-          newPosition.x = originalPosition.x + dragDelta.x / 2;
-          break;
-        case ResizeDirection.HorizontalRight:
-          newSize.x += dragDelta.x;
-          newPosition.x = originalPosition.x + dragDelta.x / 2;
-          break;
+        Vector3 newPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) + offset;
+        transform.position = new Vector3(newPosition.x, newPosition.y, transform.position.z);
       }
 
-      transform.localScale = newSize;
-      transform.position = newPosition;
+      if (isResizing)
+      {
+        Vector3 dragDelta = Camera.main.ScreenToWorldPoint(Input.mousePosition) - startingMousePosition;
+        Vector3 newSize = originalSize;
+        Vector3 newPosition = originalPosition;
+
+        switch (currentResizeDirection)
+        {
+          case ResizeDirection.VerticalUp:
+            newSize.y += dragDelta.y;
+            newPosition.y = originalPosition.y + dragDelta.y / 2;
+            break;
+          case ResizeDirection.VerticalDown:
+            newSize.y -= dragDelta.y;
+            newPosition.y = originalPosition.y + dragDelta.y / 2;
+            break;
+          case ResizeDirection.HorizontalLeft:
+            newSize.x -= dragDelta.x;
+            newPosition.x = originalPosition.x + dragDelta.x / 2;
+            break;
+          case ResizeDirection.HorizontalRight:
+            newSize.x += dragDelta.x;
+            newPosition.x = originalPosition.x + dragDelta.x / 2;
+            break;
+        }
+
+        transform.localScale = newSize;
+        transform.position = newPosition;
+      }
     }
   }
 
@@ -106,7 +110,10 @@ public class DraggableNode : MonoBehaviour
       transform.position = startPosition;
     }
   }
-
+  public void SetDraggable(bool value)
+  {
+    isDraggable = value;
+  }
   // Check for overlapping nodes
   private bool IsOverlappingOtherNodes()
   {
