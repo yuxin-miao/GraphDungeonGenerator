@@ -4,7 +4,8 @@ using TriangleNet.Geometry;
 
 public class TriangulationManager : MonoBehaviour
 {
-  public NodeManager nodeManager;
+  public GameManager gameManager;
+  private NodeManager nodeManager;
   public GameObject linePrefab;
   public List<VisualEdge> triangulatedEdges = new List<VisualEdge>();
 
@@ -12,7 +13,7 @@ public class TriangulationManager : MonoBehaviour
   {
     if (nodeManager == null)
     {
-      nodeManager = FindObjectOfType<NodeManager>();
+      nodeManager = gameManager.nodeManager;
     }
   }
   private void DrawEdge(VisualEdge edge)

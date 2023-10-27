@@ -8,13 +8,7 @@ public class NodeManager : MonoBehaviour
 
   public List<GameObject> nodes = new List<GameObject>();
   MSTManager mstManager;
-  // Final edges that would be used to generate hallways. Will be initialized by mstEdges 
-  public List<VisualEdge> finalEdges = new List<VisualEdge>();
 
-  public void InitializeFinalEdges()
-  {
-    finalEdges.AddRange(mstManager.mstEdges);
-  }
   TriangulationManager triangulationManager;
   // Max attempts to reposition a new node if it overlaps with other nodes
   private const int maxPositionAttempts = 100;
@@ -118,13 +112,6 @@ public class NodeManager : MonoBehaviour
     return true;
   }
 
-
-  public void OnMSTButtonPressed()
-  {
-    mstManager.GenerateMST(triangulationManager.triangulatedEdges);
-    triangulationManager.DrawTriangulatedEdges(mstManager.mstEdges);
-    InitializeFinalEdges();
-  }
 
 }
 
