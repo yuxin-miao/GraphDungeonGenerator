@@ -117,16 +117,15 @@ public class DraggableNode : MonoBehaviour
   // Check for overlapping nodes
   private bool IsOverlappingOtherNodes()
   {
-    // Get the collider of our node
+    // Get the collider of nodes
     Collider2D nodeCollider = GetComponent<Collider2D>();
 
-    // Check all overlapping colliders in the area of our node
+    // Check all overlapping colliders in the area of nodes
     Collider2D[] overlappingColliders = Physics2D.OverlapAreaAll((Vector2)(transform.position - transform.localScale / 2),
                                                                   (Vector2)(transform.position + transform.localScale / 2));
 
     foreach (Collider2D collider in overlappingColliders)
     {
-      // If any of the overlapping colliders is another node and is not our node
       if (collider.CompareTag("Node") && collider != nodeCollider)
       {
         return true;

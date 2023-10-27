@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[System.Serializable]  // This attribute lets Unity know that this class can be serialized and shown in the Inspector
+[System.Serializable]
 public class VisualEdge
 {
   public Vector2 StartPoint { get; private set; }

@@ -1,13 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
 using TriangleNet.Geometry;
-using TriangleNet.Topology;
 
 public class TriangulationManager : MonoBehaviour
 {
   public NodeManager nodeManager;
   public GameObject linePrefab;
-  private MSTManager mstManager;
   public List<VisualEdge> triangulatedEdges = new List<VisualEdge>();
 
   private void Awake()
@@ -16,7 +14,6 @@ public class TriangulationManager : MonoBehaviour
     {
       nodeManager = FindObjectOfType<NodeManager>();
     }
-    mstManager = GetComponent<MSTManager>();
   }
   private void DrawEdge(VisualEdge edge)
   {
@@ -34,7 +31,6 @@ public class TriangulationManager : MonoBehaviour
 
   public void PerformTriangulation()
   {
-    // Ensure there's a valid NodeManager reference before continuing.
     if (nodeManager == null) return;
 
     var nodeObjects = nodeManager.nodes;
@@ -64,7 +60,6 @@ public class TriangulationManager : MonoBehaviour
 
     DrawTriangulatedEdges(triangulatedEdges); // Visualize the edges 
 
-    nodeManager.OnTriangulationCompleted();
   }
 
   public void DrawTriangulatedEdges(List<VisualEdge> visualEdges)

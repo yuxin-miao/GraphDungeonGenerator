@@ -1,17 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI; // Required for UI elements
+using UnityEngine.UI;
 
 public class NodeManager : MonoBehaviour
 {
   public GameObject nodePrefab; 
-  public Button addButton;
-  public Button finishButton;
-  public Button nextButton;  
-  public GameObject processingPopup;  // A GameObject containing the UI for the "Processing..." popup.
+
   public List<GameObject> nodes = new List<GameObject>();
   MSTManager mstManager;
+  // Final edges that would be used to generate hallways. Will be initialized by mstEdges 
+  public List<VisualEdge> finalEdges = new List<VisualEdge>();
 
+  public void InitializeFinalEdges()
+  {
+    finalEdges.AddRange(mstManager.mstEdges);
+  }
   TriangulationManager triangulationManager;
   // Max attempts to reposition a new node if it overlaps with other nodes
   private const int maxPositionAttempts = 100;
@@ -22,25 +25,13 @@ public class NodeManager : MonoBehaviour
     triangulationManager = FindObjectOfType<TriangulationManager>();
     mstManager = FindObjectOfType<MSTManager>();
   }
-  void Start()
-  {
-    addButton.onClick.AddListener(AddNode);
-    finishButton.onClick.AddListener(FinishProcedure);
-
-    // Ensure the processing popup is initially hidden.
-    processingPopup.SetActive(false);
-
-
-    nextButton.onClick.AddListener(OnNextButtonPressed); // Assuming you have a method to handle the Next button
-    nextButton.gameObject.SetActive(false); // Hide the Next button at the start
-  }
 
   public void AddNode()
   {
     // Get the center of the screen
     Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
     Vector3 newPosition = Camera.main.ScreenToWorldPoint(screenCenter);
-    newPosition.z = 0;  // Ensure it's on the same Z plane as your other nodes
+    newPosition.z = 0; 
 
     // Ensure the new node does not overlap with existing nodes
     if (IsPositionClear(newPosition))
@@ -92,11 +83,9 @@ public class NodeManager : MonoBehaviour
     }
   }
 
-  void FinishProcedure()
+  public void FinishUserNodesProcedure()
   {
     // Hide the Add and Finish buttons.
-    addButton.gameObject.SetActive(false);
-    finishButton.gameObject.SetActive(false);
     foreach (GameObject node in nodes)
     {
       DraggableNode draggableNode = node.GetComponent<DraggableNode>();
@@ -105,13 +94,9 @@ public class NodeManager : MonoBehaviour
         draggableNode.SetDraggable(false);
       }
     }
-    // Show the "Processing..." popup.
-    processingPopup.SetActive(true);
 
-    // Logic for when user input is finished.
-    // After this, you'd probably also want to hide the processing popup at some point.
-    // You can use a coroutine to simulate a delay, or you might hide it once actual processing is done.
-    Debug.Log("User input finished!");
+
+    // When user input is finished, perfrom triangulation 
     triangulationManager.PerformTriangulation();
 
   }
@@ -133,17 +118,12 @@ public class NodeManager : MonoBehaviour
     return true;
   }
 
-  // This function will be called when the triangulation process finishes.
-  public void OnTriangulationCompleted()
-  {
-    processingPopup.SetActive(false);
-    nextButton.gameObject.SetActive(true);
-  }
 
-  void OnNextButtonPressed()
+  public void OnMSTButtonPressed()
   {
     mstManager.GenerateMST(triangulationManager.triangulatedEdges);
     triangulationManager.DrawTriangulatedEdges(mstManager.mstEdges);
+    InitializeFinalEdges();
   }
 
 }
