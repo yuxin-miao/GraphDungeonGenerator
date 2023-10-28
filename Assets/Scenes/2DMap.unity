@@ -236,7 +236,9 @@ MonoBehaviour:
   uiManager: {fileID: 684575348}
   triangulationManager: {fileID: 1309821202}
   mstManager: {fileID: 1309821204}
+  linePrefab: {fileID: 307015349}
   finalEdges: []
+  currentState: 0
 --- !u!4 &184818363
 Transform:
   m_ObjectHideFlags: 0
@@ -1096,7 +1098,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameManager: {fileID: 184818362}
-  linePrefab: {fileID: 307015349}
   triangulatedEdges: []
 --- !u!4 &1309821203
 Transform:

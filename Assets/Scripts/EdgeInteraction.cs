@@ -16,35 +16,36 @@ public class EdgeInteraction : MonoBehaviour
       int layerMask = 1 << LayerMask.NameToLayer("Edges");
       RaycastHit2D hit = Physics2D.Raycast(ray.origin, ray.direction, Mathf.Infinity, layerMask);
 
-      Debug.Log("Input.GetMouseButtonDown(0)");
-      if (hit.collider != null)
-      {
-        Debug.Log("Hit object: " + hit.collider.gameObject.name);
-      }
-      else
-      {
-        Debug.Log("No hit detected");
-      }
       if (hit.collider != null && hit.collider.CompareTag("Edge"))
       {
         EdgeDataHolder edgeDataHolder = hit.collider.GetComponent<EdgeDataHolder>();
         if (edgeDataHolder && edgeDataHolder.EdgeData != null)
         {
-          HandleEdgeClick(edgeDataHolder.EdgeData);
+          HandleEdgeClick(edgeDataHolder);
         }
       }
     }
   }
-
-  private void HandleEdgeClick(VisualEdge clickedEdge)
+  private void HandleEdgeClick(EdgeDataHolder edgeDataHolder)
   {
+    GameObject edgeGameObject = edgeDataHolder.gameObject;
+    VisualEdge clickedEdge = edgeDataHolder.EdgeData;
     if (gameManager.finalEdges.Contains(clickedEdge))
     {
       gameManager.finalEdges.Remove(clickedEdge);
+
+      if (edgeGameObject != null)
+      {
+        Destroy(edgeGameObject);
+      }
     }
     else
     {
+      clickedEdge.EdgeColor = Color.red;
       gameManager.finalEdges.Add(clickedEdge);
+      gameManager.DrawEdge(clickedEdge);
+
     }
   }
+
 }
