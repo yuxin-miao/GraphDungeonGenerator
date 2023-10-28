@@ -19,7 +19,11 @@ public class TriangulationManager : MonoBehaviour
   private void DrawEdge(VisualEdge edge)
   {
     GameObject lineObj = Instantiate(linePrefab);
+    lineObj.transform.position = Vector3.zero;
+    lineObj.transform.rotation = Quaternion.identity;
+
     LineRenderer lr = lineObj.GetComponent<LineRenderer>();
+    BoxCollider2D boxCollider = lineObj.AddComponent<BoxCollider2D>();
 
     Vector3 start = new Vector3(edge.StartPoint.x, edge.StartPoint.y, 0);
     Vector3 end = new Vector3(edge.EndPoint.x, edge.EndPoint.y, 0);
@@ -28,6 +32,20 @@ public class TriangulationManager : MonoBehaviour
     lr.SetPosition(1, end);
     lr.startColor = edge.EdgeColor;
     lr.endColor = edge.EdgeColor;
+    lr.startWidth = 0.1f;
+    lr.endWidth = 0.1f;
+
+    // Calculate the midpoint and rotation for the box collider
+    Vector2 midPoint = (start + end) / 2;
+    float angle = Mathf.Atan2(end.y - start.y, end.x - start.x) * Mathf.Rad2Deg;
+    float length = Vector2.Distance(start, end);
+
+    boxCollider.transform.position = midPoint;
+    boxCollider.transform.Rotate(0, 0, angle);
+    boxCollider.size = new Vector2(length, 0.1f); 
+
+    EdgeDataHolder edgeDataHolder = lineObj.GetComponent<EdgeDataHolder>();
+    edgeDataHolder.EdgeData = edge;
   }
 
   public void PerformTriangulation()

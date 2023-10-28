@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     Triangulation,
     MSTGeneration,
     EdgeModification,
+    PathFinding,
     GameOver
   }
 
@@ -19,16 +20,14 @@ public class GameManager : MonoBehaviour
   //public EdgeInteraction edgeInteraction;
 
   // Final edges that would be used to generate hallways. Will be initialized by mstEdges 
-  public List<VisualEdge> finalEdges = new List<VisualEdge>();
+  public List<VisualEdge> finalEdges;
   private void Start()
   {
     // Skip Initialization state for now, might add later 
     SetState(GameState.NodePlacement);
   }
-  public void InitializeFinalEdges()
-  {
-    finalEdges.AddRange(mstManager.mstEdges);
-  }
+
+  [SerializeField]
   private GameState currentState;
 
 
@@ -80,11 +79,14 @@ public class GameManager : MonoBehaviour
         uiManager.UpdateUIForMST();
         mstManager.GenerateMST(triangulationManager.triangulatedEdges);
         triangulationManager.DrawTriangulatedEdges(mstManager.mstEdges);
-        InitializeFinalEdges();
         break;
 
       case GameState.EdgeModification:
+        uiManager.UpdateUIForEdge();
+        finalEdges = new List<VisualEdge>(mstManager.mstEdges);
+        break;
 
+      case GameState.PathFinding:
         break;
 
       case GameState.GameOver:

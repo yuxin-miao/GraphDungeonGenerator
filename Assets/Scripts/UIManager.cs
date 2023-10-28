@@ -58,5 +58,10 @@ public class UIManager : MonoBehaviour
   {
     actionButton.GetComponentInChildren<Text>().text = "Modify Edges";
   }
+
+  public void UpdateUIForEdge()
+  {
+    actionButton.GetComponentInChildren<Text>().text = "Find Path";
+  }
 }
 
