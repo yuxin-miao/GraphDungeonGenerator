@@ -1,5 +1,5 @@
 using UnityEngine;
-
+// Class for the edge connecting nodes 
 [System.Serializable]
 public class VisualEdge
 {
@@ -8,7 +8,7 @@ public class VisualEdge
   public Color EdgeColor { get; set; }
   public float Weight;
 
-  // Constructor
+  // Constructor 
   public VisualEdge(Vector2 startPoint, Vector2 endPoint, Color edgeColor)
   {
     StartPoint = startPoint;

@@ -236,6 +236,7 @@ MonoBehaviour:
   uiManager: {fileID: 684575348}
   triangulationManager: {fileID: 1309821202}
   mstManager: {fileID: 1309821204}
+  edgeInteraction: {fileID: 184818364}
   linePrefab: {fileID: 307015349}
   finalEdges: []
   currentState: 0

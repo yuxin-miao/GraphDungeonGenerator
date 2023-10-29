@@ -39,7 +39,10 @@ public class UIManager : MonoBehaviour
         break;
 
       case GameManager.GameState.EdgeModification:
+        gameManager.SetState(GameManager.GameState.PathFinding);
+        break;
 
+      case GameManager.GameState.PathFinding:
         break;
     }
 
@@ -62,6 +65,11 @@ public class UIManager : MonoBehaviour
   public void UpdateUIForEdge()
   {
     actionButton.GetComponentInChildren<Text>().text = "Find Path";
+  }
+
+  public void UpdateUIForPath()
+  {
+    actionButton.GetComponentInChildren<Text>().text = "AddPrefab";
   }
 }
 

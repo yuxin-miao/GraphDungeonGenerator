@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class EdgeInteraction : MonoBehaviour
 {
   public GameManager gameManager;
-
+  
   private void Update()
   {
     if (gameManager.CurrentState != GameManager.GameState.EdgeModification)
@@ -41,11 +41,26 @@ public class EdgeInteraction : MonoBehaviour
     }
     else
     {
-      clickedEdge.EdgeColor = Color.red;
+      clickedEdge.EdgeColor = gameManager.finalColor;
       gameManager.finalEdges.Add(clickedEdge);
       gameManager.DrawEdge(clickedEdge);
 
     }
   }
+
+  public void ClearNonFinalEdges()
+  {
+    GameObject[] allEdges = GameObject.FindGameObjectsWithTag("Edge");
+
+    foreach (GameObject edgeObject in allEdges)
+    {
+      LineRenderer lr = edgeObject.GetComponent<LineRenderer>();
+      if (lr && lr.startColor != gameManager.finalColor)
+      {
+        Destroy(edgeObject);
+      }
+    }
+  }
+
 
 }

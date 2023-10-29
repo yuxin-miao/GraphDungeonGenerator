@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     MSTGeneration,
     EdgeModification,
     PathFinding,
+    AddPrefab,
     GameOver
   }
 
@@ -17,14 +18,17 @@ public class GameManager : MonoBehaviour
   public UIManager uiManager;
   public TriangulationManager triangulationManager;
   public MSTManager mstManager;
-  public GameObject linePrefab;
+  public EdgeInteraction edgeInteraction;
 
-  // Final edges that would be used to generate hallways. Will be initialized by mstEdges 
+  public GameObject linePrefab;
+  public Color finalColor = Color.blue;
+  // Final edges that would be used to generate hallways
   public List<VisualEdge> finalEdges;
   private void Start()
   {
     // Skip Initialization state for now, might add later 
     SetState(GameState.NodePlacement);
+
   }
 
   [SerializeField]
@@ -87,6 +91,8 @@ public class GameManager : MonoBehaviour
         break;
 
       case GameState.PathFinding:
+        uiManager.UpdateUIForPath();
+        edgeInteraction.ClearNonFinalEdges();
         break;
 
       case GameState.GameOver:
@@ -101,7 +107,7 @@ public class GameManager : MonoBehaviour
     foreach (VisualEdge edge in finalEdges)
     {
       // Update the EdgeColor property
-      edge.EdgeColor = Color.red;
+      edge.EdgeColor = finalColor;
       DrawEdge(edge);
  
     }
