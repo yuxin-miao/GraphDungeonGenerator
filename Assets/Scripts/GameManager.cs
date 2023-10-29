@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
   public TriangulationManager triangulationManager;
   public MSTManager mstManager;
   public EdgeInteraction edgeInteraction;
-
+  public GridManager gridManager;
   public GameObject linePrefab;
   public Color finalColor = Color.blue;
   // Final edges that would be used to generate hallways
@@ -77,6 +77,7 @@ public class GameManager : MonoBehaviour
       case GameState.Triangulation:
         uiManager.UpdateUIForTriangulation();
         nodeManager.FinishUserNodesProcedure();
+        gridManager.InitializeGrid();
         break;
 
       case GameState.MSTGeneration:
